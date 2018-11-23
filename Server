@@ -1,0 +1,59 @@
+package main
+
+import "net"
+import "fmt"
+import "bufio"
+import "strings" // only needed below for sample processing
+import "math/cmplx"
+import "strconv"
+import "sort"
+
+func modul(a int, b int) (float64,error){
+  return sqrt(a*a + b*b)
+}
+
+func main() {
+
+  fmt.Println("Launching server...")
+
+  // listen on all interfaces
+  ln, _ := net.Listen("tcp", ":8081")
+
+  // accept connection on port
+  conn, _ := ln.Accept()
+
+  // run loop forever (or until ctrl-c)
+  for {
+    // will listen for message to process ending in newline (\n)
+    message, _ := bufio.NewReader(conn).ReadString('\n')
+    // output message received
+    fmt.Print("Message Received:", string(message))
+	
+	// splitting string into "v" array 
+	v =: strings.Split(message, ",")
+
+	
+	j := 0.0
+	var newv [50]float64
+	
+	for i := 2; i < len(v); i+=2{
+	
+	nr1 , err := strconv.Atoi(v[i])
+	nr2 , err := strconv.Atoi(v[i+1])
+	
+	newv[j], err := modul(nr1,nr2) 
+	j++
+	
+	}
+	
+	sort.Floats(newv)
+	var newmessage string = "Modulele ce nu apartin intervalului sunt: "
+	
+	for i := 0; i < len(newv); i++{
+		if newv[j] < v[0] || newv[j] > v[1]
+			newmessage = newmessage + newv[0] + " "
+	}
+    // send new string back to client
+    conn.Write([]byte(newmessage + "\n"))
+  }
+}
